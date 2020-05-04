@@ -5,7 +5,13 @@ import time
 import threading
 import requests
 import argparse
-from tasks import foo, bar
+from gmail import (
+    gmail_site_down, 
+    gmail_site_back,
+    gmail_site_stilldown
+)
+#from slack import slack_site_down, slack_site_back
+
 
 """
 uptime
@@ -40,21 +46,24 @@ def site_status_back(url):
     print(f"Site is back online: {url}")
     BROKEN.remove(url)
     TARGETS.add(url)
+    gmail_site_back(url)
 
 
 def site_status_down(url):
     print(f"Site is down (first notice): {url}")
     TARGETS.remove(url)
     BROKEN.add(url)
+    gmail_site_down(url)
 
 
 def site_status_stilldown(url):
     print(f"Site is down: {url}")
+    gmail_site_stilldown(url)
 
 
 def site_up():
     while True:
-        for url in TARGETS:
+        for url in list(TARGETS):
             try:
                 r = requests.get(url)
                 code = r.status_code
@@ -65,14 +74,16 @@ def site_up():
             except requests.ConnectionError:
                 site_status_down(url)
         # Sleep 1 min before repeating
-        time.sleep(60)
+        #time.sleep(60)
+        time.sleep(5)
 
 
 def site_down():
     while True:
         # Sleep 15 min before trying again
-        time.sleep(900)
-        for url in BROKEN:
+        #time.sleep(900)
+        time.sleep(5)
+        for url in list(BROKEN):
             try:
                 r = requests.get(url)
                 code = r.status_code
