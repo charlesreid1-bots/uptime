@@ -1,5 +1,5 @@
 import smtplib
-from config import get_gmail_secrets, get_gmail_recipient
+from uptime_config import get_gmail_secrets, get_gmail_recipient
 
 
 """

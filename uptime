@@ -5,12 +5,17 @@ import time
 import threading
 import requests
 import argparse
-from gmail import (
+
+from uptime_gmail import (
     gmail_site_down, 
     gmail_site_back,
     gmail_site_stilldown
 )
-#from slack import slack_site_down, slack_site_back
+from uptime_slack import (
+    slack_site_down,
+    slack_site_back,
+    slack_site_stilldown
+)
 
 
 """
@@ -47,6 +52,7 @@ def site_status_back(url):
     BROKEN.remove(url)
     TARGETS.add(url)
     gmail_site_back(url)
+    slack_site_back(url)
 
 
 def site_status_down(url):
@@ -54,6 +60,7 @@ def site_status_down(url):
     TARGETS.remove(url)
     BROKEN.add(url)
     gmail_site_down(url)
+    slack_site_down(url)
 
 
 def site_status_stilldown(url):
