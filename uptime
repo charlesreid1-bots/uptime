@@ -2,10 +2,12 @@
 import os
 import sys
 import time
+import datetime
 import threading
 import requests
 import argparse
 
+from uptime_utils import verbose_timedelta
 from uptime_gmail import (
     gmail_site_down, 
     gmail_site_back,
@@ -33,7 +35,7 @@ TARGETS = {
     'http://charlesreid1.com',
     'https://charlesreid1.com'
 }
-BROKEN = set()
+BROKEN = {}
 
 
 def main():
@@ -49,7 +51,7 @@ def site_status_ok(url):
 
 def site_status_back(url):
     print(f"Site is back online: {url}")
-    BROKEN.remove(url)
+    del BROKEN[url]
     TARGETS.add(url)
     gmail_site_back(url)
     slack_site_back(url)
@@ -58,14 +60,17 @@ def site_status_back(url):
 def site_status_down(url):
     print(f"Site is down (first notice): {url}")
     TARGETS.remove(url)
-    BROKEN.add(url)
+    BROKEN[url] = datetime.datetime.now()
     gmail_site_down(url)
     slack_site_down(url)
 
 
 def site_status_stilldown(url):
-    print(f"Site is down: {url}")
-    gmail_site_stilldown(url)
+    delta = datetime.datetime.now() - BROKEN[url]
+    how_long = verbose_timedelta(delta)
+    print(f"Site is down ({how_long}): {url}")
+    gmail_site_stilldown(url, how_long)
+    slack_site_stilldown(url, how_long)
 
 
 def site_up():

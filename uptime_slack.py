@@ -36,8 +36,8 @@ def slack_site_down(url):
     content = f"SITE IS DOWN: {url}"
     send_slack_message(content)
 
-def slack_site_stilldown(url):
-    content = f"SITE IS (STILL) DOWN: {url}"
+def slack_site_stilldown(url, how_long):
+    content = f"SITE IS DOWN: {url}\nSite has been down {how_long}"
     send_slack_message(content)
 
 def slack_site_back(url):

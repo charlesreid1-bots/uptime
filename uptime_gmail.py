@@ -53,9 +53,9 @@ def gmail_site_down(url):
     send_email(subject, body)
 
 
-def gmail_site_stilldown(url):
-    subject = f"SITE IS (STILL) DOWN: {url}"
-    body = f"Site is (still) down: {url}"
+def gmail_site_stilldown(url, how_long):
+    subject = f"SITE IS DOWN: {url}"
+    body = f"Site has been down {how_long}: {url}"
     send_email(subject, body)
 
 
