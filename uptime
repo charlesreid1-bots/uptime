@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-import os, sys
+import os
+import sys
+import time
+import threading
+import requests
 import argparse
-
-
-PROG = 'uptime'
-
+from tasks import foo, bar
 
 """
 uptime
@@ -15,42 +16,73 @@ may 2020
 """
 
 
-def main(sysargs = sys.argv[1:]):
-
-    parser = get_argument_parser(sysargs)
-
-    # Make sure the user provided SOME arguments
-    if(len(sys.argv)==1):
-        parser.print_help(sys.stderr)
-        sys.exit(1)
-
-    # Parse the arguments
-    args = parser.parse_args(sysargs)
-
-    work_dir = args.dir
-
-    print("Working directory:")
-    print(work_dir)
-    print("Searching for directory on disk...")
-    if os.path.isdir(work_dir):
-        print("Found!")
-    else:
-        print("Does not exist!")
+PROGRAM = 'uptime'
+TARGETS = {
+    'https://google.com',
+    'http://charlesreid1.com',
+    'https://charlesreid1.com'
+}
+BROKEN = set()
 
 
-def get_argument_parser(sysargs):
-    parser = argparse.ArgumentParser(prog = PROG)
+def main():
+    t1 = threading.Thread(target = site_up)
+    t2 = threading.Thread(target = site_down)
+    t1.start()
+    t2.start()
 
 
-    required_args = parser.add_argument_group('Required Arguments')
-    required_args.add_argument('-d', '--dir', 
-            required=True,
-            help="""Specify the location on disk of the directory""")
+def site_status_ok(url):
+    print(f"Site is ok: {url}")
 
-    return parser
+
+def site_status_back(url):
+    print(f"Site is back online: {url}")
+    BROKEN.remove(url)
+    TARGETS.add(url)
+
+
+def site_status_down(url):
+    print(f"Site is down (first notice): {url}")
+    TARGETS.remove(url)
+    BROKEN.add(url)
+
+
+def site_status_stilldown(url):
+    print(f"Site is down: {url}")
+
+
+def site_up():
+    while True:
+        for url in TARGETS:
+            try:
+                r = requests.get(url)
+                code = r.status_code
+                if code<400:
+                    site_status_ok(url)
+                else:
+                    site_status_down(url)
+            except requests.ConnectionError:
+                site_status_down(url)
+        # Sleep 1 min before repeating
+        time.sleep(60)
+
+
+def site_down():
+    while True:
+        # Sleep 15 min before trying again
+        time.sleep(900)
+        for url in BROKEN:
+            try:
+                r = requests.get(url)
+                code = r.status_code
+                if code<400:
+                    site_status_back(url)
+                else:
+                    site_status_stilldown(url)
+            except requests.ConnectionError:
+                site_status_stilldown(url)
 
 
 if __name__ == '__main__':
     main()
-
-
