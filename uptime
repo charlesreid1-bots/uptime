@@ -32,7 +32,6 @@ may 2020
 PROGRAM = 'uptime'
 TARGETS = {
     'https://google.com',
-    'http://charlesreid1.com',
     'https://charlesreid1.com'
 }
 BROKEN = {}
