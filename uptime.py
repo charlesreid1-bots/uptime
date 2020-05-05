@@ -30,7 +30,6 @@ may 2020
 
 PROGRAM = 'uptime'
 TARGETS = {
-    'https://google.com',
     'https://charlesreid1.com',
 }
 BROKEN = {}
@@ -83,9 +82,11 @@ def site_up():
                     else:
                         site_status_ok(url)
                 else:
-                    site_status_down(url)
+                    if url not in BROKEN.keys():
+                        site_status_down(url)
             except requests.ConnectionError:
-                site_status_down(url)
+                if url not in BROKEN.keys():
+                    site_status_down(url)
         # Sleep 1 min before repeating
         time.sleep(60)
 
