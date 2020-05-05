@@ -46,7 +46,7 @@ def main():
 
 
 def site_status_ok(url):
-    print(f"Site is ok: {url}")
+    pass
 
 
 def site_status_back(url):
@@ -86,15 +86,13 @@ def site_up():
             except requests.ConnectionError:
                 site_status_down(url)
         # Sleep 1 min before repeating
-        #time.sleep(60)
-        time.sleep(5)
+        time.sleep(60)
 
 
 def site_down():
     while True:
         # Sleep 15 min before trying again
-        #time.sleep(900)
-        time.sleep(5)
+        time.sleep(900)
         for url in list(BROKEN):
             try:
                 r = requests.get(url)
