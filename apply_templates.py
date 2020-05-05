@@ -12,13 +12,14 @@ REAL_FILES = [t[:-3] for t in TEMPLATE_FILES]
 OVERWRITE = False
 
 REQ_ENV_VARS = [
-    'UPTIME_PATH',
-    'UPTIME_GMAIL_EMAIL',
-    'UPTIME_GMAIL_PASSWORD'
-    'UPTIME_RECIPIENT_NAME',
-    'UPTIME_RECIPIENT_EMAIL',
-    'UPTIME_SLACK_APIKEY',
-    'UPTIME_SLACK_CHANNEL',
+    'UPTIME_PATH',  # path to the uptime repo
+    'UPTIME_USER',  # the user to run the service as
+    'UPTIME_GMAIL_EMAIL',  # email address to send alert emails as
+    'UPTIME_GMAIL_PASSWORD'  # password for email address
+    'UPTIME_RECIPIENT_NAME',  # first/last name of recipient of alert emails
+    'UPTIME_RECIPIENT_EMAIL',  # email of recipient of alert emails
+    'UPTIME_SLACK_APIKEY',  # bot user api key (also sets workspace)
+    'UPTIME_SLACK_CHANNEL',  # slack channel in which to post alert messages
 ]
 
 def usage():

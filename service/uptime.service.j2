@@ -3,7 +3,9 @@ Description=dorky uptime bot
 
 [Service]
 Restart=always
-ExecStart={{ uptime_path }}/vp/bin/python {{ uptime_path }}/uptime
+User={{ uptime_user }}
+Group=wheel
+ExecStart={{ uptime_path }}/vp/bin/python -u {{ uptime_path }}/uptime.py
 ExecStop=/usr/bin/killall {{ uptime_path }}/vp/bin/python
 
 [Install]
