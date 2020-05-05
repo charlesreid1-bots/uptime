@@ -51,14 +51,12 @@ def site_status_ok(url):
 def site_status_back(url):
     print(f"Site is back online: {url}")
     del BROKEN[url]
-    TARGETS.add(url)
     gmail_site_back(url)
     slack_site_back(url)
 
 
 def site_status_down(url):
     print(f"Site is down (first notice): {url}")
-    TARGETS.remove(url)
     BROKEN[url] = datetime.datetime.now()
     gmail_site_down(url)
     slack_site_down(url)
@@ -79,7 +77,10 @@ def site_up():
                 r = requests.get(url)
                 code = r.status_code
                 if code<400:
-                    site_status_ok(url)
+                    if url in BROKEN.keys():
+                        site_status_back(url)
+                    else:
+                        site_status_ok(url)
                 else:
                     site_status_down(url)
             except requests.ConnectionError:
