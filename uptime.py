@@ -1,4 +1,3 @@
-#!/usr/bin/env python3 -u
 import os
 import sys
 import time
@@ -32,7 +31,7 @@ may 2020
 PROGRAM = 'uptime'
 TARGETS = {
     'https://google.com',
-    'https://charlesreid1.com'
+    'https://charlesreid1.com',
 }
 BROKEN = {}
 
