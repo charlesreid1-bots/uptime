@@ -21,7 +21,7 @@ channel
 """
 
 
-CONFIG = os.path.join(os.environ['HOME'], '.config', 'uptime', 'uptime.conf')
+CONFIG = os.path.join(os.path.expanduser('~'), '.config', 'uptime', 'uptime.conf')
 
 
 def check_config(f):
