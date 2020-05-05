@@ -4,7 +4,7 @@ Description=dorky uptime bot
 [Service]
 Restart=always
 ExecStart={{ uptime_path }}/vp/bin/python {{ uptime_path }}/uptime
-ExecStop=/usr/bin/killall uptime
+ExecStop=/bin/ps aux | /bin/grep "[u]ptime" | /usr/bin/awk '{print $2}' | /usr/bin/xargs /usr/bin/killall -9
 
 [Install]
 WantedBy=default.target
